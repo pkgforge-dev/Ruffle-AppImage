@@ -21,7 +21,7 @@ echo "Getting app..."
 echo "---------------------------------------------------------------"
 LINK=$(wget https://api.github.com/repos/ruffle-rs/ruffle/releases -O - \
       | sed 's/[()",{} ]/\n/g' | grep -o -m 1 "https.*linux-${ARCH}.tar.gz")
-echo "$LINK" | awk -F'/' '{gsub(/^v/, "", $(NF-1)); print $(NF-1); exit}' > ~/version
+echo "$LINK" | awk -F'/' '{v=$(NF-1); sub(/nightly-/, "", v); print v; exit}' > ~/version
 if ! wget --retry-connrefused --tries=30 "$LINK" -O /tmp/app.tar.gz 2>/tmp/download.log; then
 	cat /tmp/download.log
 	exit 1
