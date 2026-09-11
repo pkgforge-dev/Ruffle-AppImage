@@ -13,14 +13,20 @@ echo "---------------------------------------------------------------"
 get-debloated-pkgs --add-common --prefer-nano
 
 # Comment this out if you need an AUR package
-make-aur-package ruffle-nightly-bin
+#make-aur-package ruffle-nightly-bin
 
 # If the application needs to be manually built that has to be done down here
 
-# if you also have to make nightly releases check for DEVEL_RELEASE = 1
-#
-# if [ "${DEVEL_RELEASE-}" = 1 ]; then
-# 	nightly build steps
-# else
-# 	regular build steps
-# fi
+echo "Getting app..."
+echo "---------------------------------------------------------------"
+LINK=$(wget https://api.github.com/repos/ruffle-rs/ruffle/releases -O - \
+      | sed 's/[()",{} ]/\n/g' | grep -o -m 1 "https.*linux-${ARCH}.tar.gz")
+echo "$LINK" | awk -F'/' '{gsub(/^v/, "", $(NF-1)); print $(NF-1); exit}' > ~/version
+if ! wget --retry-connrefused --tries=30 "$LINK" -O /tmp/app.tar.gz 2>/tmp/download.log; then
+	cat /tmp/download.log
+	exit 1
+fi
+
+mkdir -p ./AppDir/bin
+tar -xvf /tmp/app.tar.gz
+mv -v ./ruffle ./AppDir/bin
