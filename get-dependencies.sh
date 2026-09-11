@@ -12,11 +12,6 @@ echo "Installing debloated packages..."
 echo "---------------------------------------------------------------"
 get-debloated-pkgs --add-common --prefer-nano
 
-# Comment this out if you need an AUR package
-#make-aur-package ruffle-nightly-bin
-
-# If the application needs to be manually built that has to be done down here
-
 echo "Getting app..."
 echo "---------------------------------------------------------------"
 LINK=$(wget https://api.github.com/repos/ruffle-rs/ruffle/releases -O - \
